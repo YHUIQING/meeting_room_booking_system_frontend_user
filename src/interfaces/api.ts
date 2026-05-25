@@ -1,18 +1,20 @@
 import axiosInstance from './index';
-
+import { RegisterUser } from '../types/user';
+  
 export async function login(username: string, password: string) {
   return await axiosInstance.post('/user/login', { username, password });
 }
 
-export async function register(registerData: {
-  username: string;
-  nickName: string;
-  password: string;
-  confirmPassword: string;
-  email: string;
-  captcha: string;
-}) {
-  return await axiosInstance.post('/user/register', registerData);
+export async function registerCaptcha(email: string) {
+    return await axiosInstance.get('/user/register-captcha', {
+        params: {
+            address: email
+        }
+    });
+}
+
+export async function register(registerUser: RegisterUser) {
+    return await axiosInstance.post('/user/register', registerUser);
 }
 
 export async function updatePassword(data: {
@@ -23,12 +25,6 @@ export async function updatePassword(data: {
   confirmPassword: string;
 }) {
   return await axiosInstance.post('/user/update_password', data);
-}
-
-export async function getRegisterCaptcha(email: string) {
-  return await axiosInstance.get('/user/register-captcha', {
-    params: { address: email },
-  });
 }
 
 export async function getUpdatePasswordCaptcha(email: string) {

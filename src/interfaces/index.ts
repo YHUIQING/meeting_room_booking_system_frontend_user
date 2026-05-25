@@ -2,7 +2,7 @@ import axios, { type AxiosRequestConfig } from 'axios';
 import { message } from 'antd';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/',
+  baseURL: 'http://localhost:3005/',
   timeout: 3000,
 });
 
@@ -20,9 +20,14 @@ axiosInstance.interceptors.request.use((config) => {
 // 响应拦截器：统一错误处理
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response;
+    return response?.data || {};
   },
   async (error) => {
+    if (!error.response) {
+      message.error('网络异常，请检查网络连接');
+      return Promise.reject(error);
+    }
+
     const { data, config } = error.response;
 
     if (data.code === 401 && !config._retried) {

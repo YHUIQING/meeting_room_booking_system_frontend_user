@@ -1,5 +1,6 @@
-import { Button, Form, Input, Space, Typography } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Form, Input, message, Space, Typography } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../../interfaces/api';
 
 interface LoginForm {
   username: string;
@@ -8,9 +9,26 @@ interface LoginForm {
 
 export function Login() {
   const [form] = Form.useForm<LoginForm>();
+  const navigate = useNavigate();
 
-  const handleLogin = (values: LoginForm) => {
-    console.log('登录', values.username, values.password);
+  const handleLogin = async (values: LoginForm) => {
+    const res = (await login(values.username, values.password)) as unknown as {
+      code: number;
+      message: string;
+      data: any;
+    };
+    console.log(res);
+    const { code, message: msg, data } = res;
+
+    if (code === 201 || code === 200) {
+      message.success('登录成功');
+      localStorage.setItem('access_token', data.accessToken);
+      localStorage.setItem('refresh_token', data.refreshToken);
+      localStorage.setItem('user_info', JSON.stringify(data.userInfo));
+      navigate('/');
+    } else {
+      message.error(msg || '登录失败');
+    }
   };
 
   return (
