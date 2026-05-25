@@ -1,6 +1,12 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import { message } from 'antd';
 
+export interface ApiResponse<T = any> {
+  code: number;
+  message: string;
+  data: T;
+}
+
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:3005/',
   timeout: 3000,

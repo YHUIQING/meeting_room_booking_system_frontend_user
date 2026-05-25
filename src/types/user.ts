@@ -6,3 +6,11 @@ export interface RegisterUser {
     email: string;
     captcha: string;
 }
+
+export interface UpdatePassword {
+    username: string;
+    email: string;
+    captcha: string;
+    password: string;
+    confirmPassword: string;
+}

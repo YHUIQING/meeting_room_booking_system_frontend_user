@@ -14,17 +14,7 @@ export interface RegisterUser {
     captcha: string;
 }
 
-const navigate = useNavigate();
-const onFinish = async (values: RegisterUser) => {
-    console.log(values);
-    const res = await register(values);
-    if (res?.code === 200) {
-        // 跳转到登录页面
-        navigate('/login');
-        message.success('注册成功');
-    }   
-    console.log('registerFetch', res);
-};
+
 
 
 const layout1 = {
@@ -43,7 +33,17 @@ const getCaptcha = async (email: string) => {
 
 export function Register() {
     const [form] = useForm();
-
+    const navigate = useNavigate();
+    const onFinish = async (values: RegisterUser) => {
+        console.log(values);
+        const res = await register(values) || {};
+        if (res?.code === 200) {
+            // 跳转到登录页面
+            navigate('/login');
+            message.success('注册成功');
+        }   
+        console.log('registerFetch', res);
+    };
     return <div id="register-container">
         <h1>会议室预订系统</h1>
         <Form
