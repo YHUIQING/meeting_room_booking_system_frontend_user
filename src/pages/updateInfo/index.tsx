@@ -1,12 +1,14 @@
 import { Button, Form, Input, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback } from 'react';
+import { useEffect } from 'react';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
-
+import { getUserInfo, updateCaptcha, updateUserInfo } from '../../interfaces/api';
 export interface UserInfo {
     headPic: string;
     nickName: string;
+    username: string;
     email: string;
     captcha: string;
 }
@@ -21,10 +23,34 @@ export function UpdateInfo() {
     const navigate = useNavigate();
 
     const onFinish = useCallback(async (values: UserInfo) => {
-        
+        const res = await updateUserInfo(values);
+        if(res.code === 201 || res.code === 200) {
+            message.success('修改成功');
+            navigate('/');
+        }
     }, []);
 
     const sendCaptcha = useCallback(async function () {
+        const res = await updateCaptcha();
+
+    }, []);
+    
+    useEffect(() => {
+        async function query() {
+            const res = await getUserInfo();
+
+            const { data } = res;
+            console.log('res-----res',res);
+            if(res.code === 201 || res.code === 200) {
+                console.log(data);
+                //怎么没有回显数据
+                form.setFieldValue('headPic', data.headPic);
+                form.setFieldValue('nickName', data.nickName);
+                form.setFieldValue('username', data.username);
+                form.setFieldValue('email', data.email);
+            }
+        }
+        query();
     }, []);
 
     return <div id="updateInfo-container">
@@ -44,7 +70,15 @@ export function UpdateInfo() {
             >
                 <Input/>
             </Form.Item>
-
+            <Form.Item
+                label="用户名"
+                name="username"
+                rules={[
+                    { required: true, message: '请输入用户名!' },
+                ]}
+            >
+                <Input />
+            </Form.Item>
             <Form.Item
                 label="昵称"
                 name="nickName"

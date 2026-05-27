@@ -18,13 +18,6 @@ export async function register(registerUser: RegisterUser) {
 }
 
 
-
-export async function getUpdatePasswordCaptcha(email: string) {
-  return await axiosInstance.get('/user/update_password/captcha', {
-    params: { address: email },
-  });
-}
-
 export async function updatePasswordCaptcha(email: string) {
     return await axiosInstance.get('/user/update_password/captcha', {
         params: {
@@ -35,4 +28,17 @@ export async function updatePasswordCaptcha(email: string) {
 
 export async function updatePassword(data: UpdatePassword) {
     return await axiosInstance.post('/user/update_password', data);
+}
+
+
+export async function getUserInfo() {
+    return await axiosInstance.get('/user/info') as unknown as ApiResponse;
+}
+
+export async function updateUserInfo(data: any) {
+    return await axiosInstance.post('/user/update', data) as unknown as ApiResponse;
+}
+
+export async function updateCaptcha () {
+    return await axiosInstance.get('/user/update/captcha') as unknown as ApiResponse;
 }
